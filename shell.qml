@@ -9,6 +9,7 @@ import Quickshell.Wayland
 import "styles"
 import "core"
 import "modules/bar"
+import "modules/controlcenter"
 
 ShellRoot {
     id: root
@@ -27,6 +28,11 @@ ShellRoot {
         function barPosition(): string {
             return Config.barPosition;
         }
+    }
+
+    Loader {
+        active: ShellState.controlCenterOpen
+        sourceComponent: ControlCenter {}
     }
 
     Variants {

@@ -88,5 +88,34 @@ Item {
             visible: active
             sourceComponent: Stats {}
         }
+
+        Rectangle {
+            width: 18
+            height: 18
+            radius: Theme.radius
+            antialiasing: false
+            color: ShellState.controlCenterOpen ? Theme.accent : (menuArea.containsMouse ? Theme.surface : "transparent")
+            border.width: ShellState.controlCenterOpen ? 0 : Theme.borderWidth
+            border.color: Theme.border
+
+            Rectangle {
+                anchors.centerIn: parent
+                width: 8
+                height: 8
+                radius: Theme.radius
+                color: "transparent"
+                border.width: Theme.borderWidth
+                border.color: ShellState.controlCenterOpen ? Theme.onAccent : Theme.text
+                antialiasing: false
+            }
+
+            MouseArea {
+                id: menuArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: ShellState.toggle("controlCenter")
+            }
+        }
     }
 }
