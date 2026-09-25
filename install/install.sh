@@ -141,7 +141,7 @@ write_hypr_conf() {
 # mwm-shell:managed
 # Gerado pelo instalador. Volta a correr o instalador para o repor.
 
-exec-once = qs -c mwm
+exec-once = sh -c 'mkdir -p "$HOME/.local/state/mwm" && exec qs -c mwm >> "$HOME/.local/state/mwm/qs.log" 2>&1'
 
 layerrule {
     name = mwm-blur
@@ -162,7 +162,7 @@ write_hypr_lua() {
 -- Gerado pelo instalador. Volta a correr o instalador para o repor.
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("qs -c mwm")
+    hl.exec_cmd("sh -c 'mkdir -p \"$HOME/.local/state/mwm\" && exec qs -c mwm >> \"$HOME/.local/state/mwm/qs.log\" 2>&1'")
 end)
 
 hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd("qs -c mwm ipc call mwm toggle controlCenter"))

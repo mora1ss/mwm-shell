@@ -92,7 +92,7 @@ Item {
                     anchors.centerIn: parent
                     mono: true
                     text: cell.modelData.label
-                    color: cell.modelData.active ? Theme.onAccent : (cell.modelData.occupied ? Theme.text : Theme.muted)
+                    color: cell.modelData.active ? Theme.accentText : (cell.modelData.occupied ? Theme.text : Theme.muted)
                 }
 
                 MouseArea {

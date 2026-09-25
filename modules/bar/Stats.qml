@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import "../../core"
 import "../../services"
 import "../../styles"
 import "../../components"

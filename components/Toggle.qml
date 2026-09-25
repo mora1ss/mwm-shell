@@ -27,7 +27,7 @@ Item {
         width: 10
         height: 12
         radius: Theme.radius
-        color: root.checked ? Theme.onAccent : Theme.muted
+        color: root.checked ? Theme.accentText : Theme.muted
         antialiasing: false
 
         Behavior on x {

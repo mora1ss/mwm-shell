@@ -350,7 +350,7 @@ PanelWindow {
                         Label {
                             anchors.centerIn: parent
                             small: true
-                            color: Theme.onAccent
+                            color: Theme.accentText
                             text: win.player && win.player.isPlaying ? "Pausa" : "Tocar"
                         }
 

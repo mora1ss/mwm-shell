@@ -29,7 +29,7 @@ Singleton {
     readonly property color text: "#f4f1ea"
     readonly property color muted: "#9a948a"
     readonly property color accent: "#ff4d1c"
-    readonly property color onAccent: "#1a0c08"
+    readonly property color accentText: "#1a0c08"
     readonly property color warn: "#e6b325"
     readonly property color danger: "#ff3355"
     readonly property color border: Qt.rgba(1, 0.96, 0.90, 0.16)

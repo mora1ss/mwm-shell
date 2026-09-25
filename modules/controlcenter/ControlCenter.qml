@@ -224,7 +224,7 @@ PanelWindow {
                             id: historyLabel
                             anchors.centerIn: parent
                             small: true
-                            color: ShellState.notificationsOpen ? Theme.onAccent : Theme.text
+                            color: ShellState.notificationsOpen ? Theme.accentText : Theme.text
                             text: "Histórico"
                         }
 
@@ -349,7 +349,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: profileButton.modelData.label
                                 small: true
-                                color: profileButton.active ? Theme.onAccent : Theme.text
+                                color: profileButton.active ? Theme.accentText : Theme.text
                             }
 
                             MouseArea {

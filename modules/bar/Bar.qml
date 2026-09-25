@@ -105,7 +105,7 @@ Item {
                 width: 8
                 height: 8
                 radius: Theme.radius
-                color: ShellState.mediaOpen ? Theme.onAccent : Theme.text
+                color: ShellState.mediaOpen ? Theme.accentText : Theme.text
                 antialiasing: false
             }
 
@@ -134,7 +134,7 @@ Item {
                 radius: Theme.radius
                 color: "transparent"
                 border.width: Theme.borderWidth
-                border.color: ShellState.controlCenterOpen ? Theme.onAccent : Theme.text
+                border.color: ShellState.controlCenterOpen ? Theme.accentText : Theme.text
                 antialiasing: false
             }
 
