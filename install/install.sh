@@ -144,6 +144,7 @@ write_hypr_conf() {
 exec-once = qs -c mwm
 
 layerrule {
+    name = mwm-blur
     match:namespace = mwm-(bar|control|media|osd|notifications)
     blur = on
 }
@@ -169,6 +170,7 @@ hl.bind("SUPER + ALT + M", hl.dsp.exec_cmd("qs -c mwm ipc call mwm toggle media"
 hl.bind("SUPER + ALT + N", hl.dsp.exec_cmd("qs -c mwm ipc call mwm toggle notifications"))
 
 hl.layer_rule({
+    name = "mwm-blur",
     match = { namespace = "mwm-(bar|control|media|osd|notifications)" },
     blur = true,
 })
