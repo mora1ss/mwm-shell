@@ -11,6 +11,7 @@ import "core"
 import "modules/bar"
 import "modules/controlcenter"
 import "modules/media"
+import "modules/osd"
 
 ShellRoot {
     id: root
@@ -40,6 +41,8 @@ ShellRoot {
         active: ShellState.mediaOpen
         sourceComponent: Media {}
     }
+
+    Osd {}
 
     Variants {
         model: Quickshell.screens
