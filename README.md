@@ -8,12 +8,12 @@ O código é original. Caelestia e Serpantinum serviram de referência de arquit
 
 - **Performance.** Um processo de render threaded, sem plugin C++, sem animações infinitas. CPU, RAM e temperatura só são lidos enquanto o módulo de estatísticas está montado na barra.
 - **Produtividade.** Workspaces por monitor, relógio, tabuleiro do sistema e leitura curta de recursos. Os módulos seguintes (atalhos de terminal, estado Git) entram na mesma barra.
-- **Media.** MPRIS, capa e mixer ficam para o módulo seguinte. A base já separa serviços de interface para esse encaixe.
+- **Media.** O painel MPRIS mostra capa, metadados, progresso clicável e o mixer por aplicação.
 - **Estética.** Bordas retas (`Theme.radius` é 0). Superfícies escuras e translúcidas para o blur do Hyprland. IBM Plex Sans na interface, IBM Plex Mono nos números.
 
 ## Estado
 
-Milestone 1: Hyprland, barra de topo de ponta a ponta, tema e configuração. Control Center, leitor MPRIS, OSD e notificações ainda não estão implementados.
+Milestone 1: Hyprland, barra, centro de controlo, MPRIS, OSD e notificações. O calendário ainda não tem painel.
 
 ## Pré-visualização
 
@@ -40,13 +40,14 @@ paru -S --needed \
   networkmanager \
   bluez \
   brightnessctl \
+  inotify-tools \
   power-profiles-daemon \
   lm_sensors \
   ttf-ibm-plex \
   ttf-material-symbols-variable
 ```
 
-`lm_sensors` não é chamado pela barra. O script lê `/proc` e `/sys`. O pacote serve para `sensors-detect` expor o hwmon do CPU. A fonte Material Symbols fica reservada aos módulos seguintes; os ícones da barra são desenhados em QML.
+`lm_sensors` não é chamado pela barra. O script lê `/proc` e `/sys`. O pacote serve para `sensors-detect` expor o hwmon do CPU. `inotify-tools` deixa o brilho reagir a alterações no sysfs sem um timer. Os ícones da barra são desenhados em QML.
 
 ## Instalação
 
@@ -71,7 +72,7 @@ A barra usa a namespace de layer `mwm-bar` e uma cor com alfa 0.72. O blur é do
 
 ```lua
 hl.layer_rule({
-  match = { namespace = "mwm-bar" },
+  match = { namespace = "mwm-(bar|control|media|osd|notifications)" },
   blur = true,
 })
 ```
@@ -80,7 +81,7 @@ Em `hyprland.conf` recente o equivalente é:
 
 ```
 layerrule {
-    match:namespace = mwm-bar
+    match:namespace = mwm-(bar|control|media|osd|notifications)
     blur = on
 }
 ```
@@ -96,11 +97,14 @@ Cores, fontes, espaçamento e `radius` estão só em [`styles/Theme.qml`](styles
 IPC, com a shell a correr:
 
 ```sh
+qs -c mwm ipc call mwm toggle controlCenter
+qs -c mwm ipc call mwm toggle media
+qs -c mwm ipc call mwm toggle notifications
 qs -c mwm ipc call mwm toggle dnd
 qs -c mwm ipc call mwm barPosition
 ```
 
-`toggle` aceita `controlCenter`, `calendar` e `dnd`. Os dois primeiros ainda não têm painel; o estado fica pronto para esses módulos.
+`toggle` aceita `controlCenter`, `media`, `notifications`, `dnd` e `calendar`. O calendário ainda não abre um painel.
 
 ## Estrutura
 

@@ -199,6 +199,45 @@ PanelWindow {
                     }
                 }
 
+                Item {
+                    width: parent.width
+                    height: 28
+
+                    Label {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Notificações"
+                    }
+
+                    Rectangle {
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: historyLabel.implicitWidth + Theme.space * 2
+                        height: 24
+                        radius: Theme.radius
+                        color: ShellState.notificationsOpen ? Theme.accent : (historyArea.containsMouse ? Theme.surface : "transparent")
+                        border.width: ShellState.notificationsOpen ? 0 : Theme.borderWidth
+                        border.color: Theme.border
+                        antialiasing: false
+
+                        Label {
+                            id: historyLabel
+                            anchors.centerIn: parent
+                            small: true
+                            color: ShellState.notificationsOpen ? Theme.onAccent : Theme.text
+                            text: "Histórico"
+                        }
+
+                        MouseArea {
+                            id: historyArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: ShellState.toggle("notifications")
+                        }
+                    }
+                }
+
                 Row {
                     width: parent.width
                     spacing: Theme.space

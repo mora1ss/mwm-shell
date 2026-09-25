@@ -10,6 +10,7 @@ Singleton {
     property var shellRoot: null
     property bool controlCenterOpen: false
     property bool mediaOpen: false
+    property bool notificationsOpen: false
     property bool calendarOpen: false
     property bool dnd: false
 
@@ -21,6 +22,9 @@ Singleton {
         case "media":
             root.mediaOpen = !root.mediaOpen;
             return "media=" + (root.mediaOpen ? "1" : "0");
+        case "notifications":
+            root.notificationsOpen = !root.notificationsOpen;
+            return "notifications=" + (root.notificationsOpen ? "1" : "0");
         case "calendar":
             root.calendarOpen = !root.calendarOpen;
             return "calendar=" + (root.calendarOpen ? "1" : "0");

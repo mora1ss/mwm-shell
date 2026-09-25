@@ -12,6 +12,7 @@ import "modules/bar"
 import "modules/controlcenter"
 import "modules/media"
 import "modules/osd"
+import "modules/notifications"
 
 ShellRoot {
     id: root
@@ -43,6 +44,12 @@ ShellRoot {
     }
 
     Osd {}
+    Popups {}
+
+    Loader {
+        active: ShellState.notificationsOpen
+        sourceComponent: History {}
+    }
 
     Variants {
         model: Quickshell.screens
