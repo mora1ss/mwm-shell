@@ -8,6 +8,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import "styles"
 import "core"
+import "modules/bar"
 
 ShellRoot {
     id: root
@@ -72,6 +73,12 @@ ShellRoot {
 
                 ScreenState {
                     screen: win.screen
+                }
+
+                Bar {
+                    anchors.fill: parent
+                    screen: win.screen
+                    live: !win.concealed
                 }
             }
         }
