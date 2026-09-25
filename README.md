@@ -25,68 +25,27 @@ As imagens abaixo são placeholders. Substituem-se por capturas reais quando a s
 
 ![Leitor de media](assets/screenshots/media.svg)
 
-## Dependências
-
-CachyOS e Arch. `quickshell-git` está no AUR; em CachyOS pode existir nos repositórios da distribuição.
-
-```sh
-paru -S --needed \
-  quickshell-git \
-  qt6-base \
-  qt6-declarative \
-  qt6-5compat \
-  pipewire \
-  wireplumber \
-  networkmanager \
-  bluez \
-  brightnessctl \
-  inotify-tools \
-  power-profiles-daemon \
-  lm_sensors \
-  ttf-ibm-plex \
-  ttf-material-symbols-variable
-```
-
-`lm_sensors` não é chamado pela barra. O script lê `/proc` e `/sys`. O pacote serve para `sensors-detect` expor o hwmon do CPU. `inotify-tools` deixa o brilho reagir a alterações no sysfs sem um timer. Os ícones da barra são desenhados em QML.
-
 ## Instalação
 
-```sh
-git clone <url-deste-repositório> ~/Projectos/mwm-shell
-mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/quickshell"
-ln -sfn ~/Projectos/mwm-shell "${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/mwm"
-qs -c mwm
+Arch Linux ou CachyOS. Um comando: o instalador pergunta o compositor, instala os pacotes e deixa o Hyprland a arrancar a shell.
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/mora1ss/mwm-shell/main/install/install.sh)"
 ```
 
-Para arrancar com a sessão, no Hyprland:
+Nesta versão a opção que configura a sessão é o Hyprland. Sway e niri aparecem na lista e ainda não escrevem configuração. No fim, entra numa sessão Hyprland. A barra sobe sozinha.
 
-```lua
-hl.on("hyprland.start", function()
-  os.execute("qs -c mwm &")
-end)
-```
+Atalhos escritos pelo instalador:
 
-## Blur
+| Atalho | Ação |
+| --- | --- |
+| Super+Alt+C | Centro de controlo |
+| Super+Alt+M | Media |
+| Super+Alt+N | Notificações |
 
-A barra usa a namespace de layer `mwm-bar` e uma cor com alfa 0.72. O blur é do compositor, não um filtro da shell.
+O blur das namespaces `mwm-bar`, `mwm-control`, `mwm-media`, `mwm-osd` e `mwm-notifications` fica no mesmo bloco. Se já existir `~/.config/hypr/hyprland.lua`, o bloco é carregado por `~/.config/caelestia/hypr-user.lua`. Caso contrário entra em `hyprland.conf`.
 
-```lua
-hl.layer_rule({
-  match = { namespace = "mwm-(bar|control|media|osd|notifications)" },
-  blur = true,
-})
-```
-
-Em `hyprland.conf` recente o equivalente é:
-
-```
-layerrule {
-    match:namespace = mwm-(bar|control|media|osd|notifications)
-    blur = on
-}
-```
-
-O tamanho e o número de passagens ficam na secção `decoration.blur` do Hyprland.
+Correr o instalador outra vez atualiza o clone e repõe esse bloco, sem duplicar a linha de inclusão.
 
 ## Configuração
 
@@ -123,6 +82,7 @@ modules/media/
 modules/osd/
 modules/notifications/
 scripts/             leitores que não têm barramento de eventos
+install/install.sh   instalador Arch/CachyOS
 ```
 
 ## Licença
