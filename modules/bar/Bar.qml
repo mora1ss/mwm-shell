@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import "../../styles"
 import "../../core"
+import "../../services"
 import "../../components"
 
 Item {
@@ -87,6 +88,34 @@ Item {
             active: Config.showStats && root.live
             visible: active
             sourceComponent: Stats {}
+        }
+
+        Rectangle {
+            visible: Mpris.active
+            width: visible ? 18 : 0
+            height: 18
+            radius: Theme.radius
+            antialiasing: false
+            color: ShellState.mediaOpen ? Theme.accent : (mediaArea.containsMouse ? Theme.surface : "transparent")
+            border.width: ShellState.mediaOpen ? 0 : Theme.borderWidth
+            border.color: Theme.border
+
+            Rectangle {
+                anchors.centerIn: parent
+                width: 8
+                height: 8
+                radius: Theme.radius
+                color: ShellState.mediaOpen ? Theme.onAccent : Theme.text
+                antialiasing: false
+            }
+
+            MouseArea {
+                id: mediaArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: ShellState.toggle("media")
+            }
         }
 
         Rectangle {

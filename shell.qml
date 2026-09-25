@@ -10,6 +10,7 @@ import "styles"
 import "core"
 import "modules/bar"
 import "modules/controlcenter"
+import "modules/media"
 
 ShellRoot {
     id: root
@@ -33,6 +34,11 @@ ShellRoot {
     Loader {
         active: ShellState.controlCenterOpen
         sourceComponent: ControlCenter {}
+    }
+
+    Loader {
+        active: ShellState.mediaOpen
+        sourceComponent: Media {}
     }
 
     Variants {
