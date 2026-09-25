@@ -1,0 +1,11 @@
+*.qmlc
+*.jsc
+.qmlls.ini
+.qmlc/
+build/
+CMakeFiles/
+result
+.direnv/
+.cache/
+*.swp
+*.log

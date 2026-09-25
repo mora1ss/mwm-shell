@@ -1,0 +1,15 @@
+{
+  "bar": {
+    "position": "top",
+    "height": 32,
+    "padding": 8,
+    "gap": 12,
+    "hideOnFullscreen": true,
+    "workspaces": true,
+    "clock": true,
+    "clockSeconds": false,
+    "tray": true,
+    "stats": true,
+    "statsIntervalMs": 1500
+  }
+}

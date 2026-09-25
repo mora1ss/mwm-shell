@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="280" viewBox="0 0 1200 280">
+  <rect width="1200" height="280" fill="#090a0c"/>
+  <rect x="48" y="40" width="200" height="200" fill="#1a1d22"/>
+  <text x="280" y="120" fill="#f4f1ea" font-family="IBM Plex Sans, sans-serif" font-size="16">placeholder · media</text>
+</svg>
