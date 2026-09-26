@@ -10,6 +10,7 @@ Row {
     id: root
 
     spacing: Config.barGap
+    implicitHeight: 18
 
     Component.onCompleted: SystemStats.subscribe()
     Component.onDestruction: SystemStats.unsubscribe()

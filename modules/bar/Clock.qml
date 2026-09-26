@@ -11,8 +11,8 @@ Item {
 
     required property bool live
 
-    implicitWidth: row.implicitWidth
-    implicitHeight: row.implicitHeight
+    implicitWidth: Math.max(row.implicitWidth, 18)
+    implicitHeight: Math.max(row.implicitHeight, 18)
 
     SystemClock {
         id: clock

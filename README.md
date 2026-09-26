@@ -35,17 +35,25 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/mora1ss/mwm-shell/main/i
 
 Nesta versão a opção que configura a sessão é o Hyprland. Sway e niri aparecem na lista e ainda não escrevem configuração. No fim, entra numa sessão Hyprland. A barra sobe sozinha.
 
-Atalhos escritos pelo instalador:
+Atalhos escritos em `~/.config/hypr/hyprland.lua`:
 
 | Atalho | Ação |
 | --- | --- |
+| Super+Return | Terminal (kitty) |
 | Super+Alt+C | Centro de controlo |
 | Super+Alt+M | Media |
 | Super+Alt+N | Notificações |
 
-O blur das namespaces `mwm-bar`, `mwm-control`, `mwm-media`, `mwm-osd` e `mwm-notifications` fica no mesmo bloco. Se já existir `~/.config/hypr/hyprland.lua`, o bloco é carregado por `~/.config/caelestia/hypr-user.lua`. Caso contrário entra em `hyprland.conf`.
+O blur das namespaces `mwm-bar`, `mwm-control`, `mwm-media`, `mwm-osd` e `mwm-notifications` fica no mesmo Lua. Se já existir um `hyprland.lua` teu, o bloco da shell entra em `~/.config/caelestia/hypr-user.lua`. Um `hyprland.conf` criado por este instalador é renomeado para `hyprland.conf.bak`, para o Hyprland 0.56 ler o Lua.
 
-Correr o instalador outra vez atualiza o clone e repõe esse bloco, sem duplicar a linha de inclusão.
+Para atualizar uma máquina que já clonou a shell:
+
+```bash
+git -C ~/.local/share/mwm-shell pull
+bash ~/.local/share/mwm-shell/install/install.sh
+```
+
+Depois entra numa sessão Hyprland nova.
 
 ## Configuração
 

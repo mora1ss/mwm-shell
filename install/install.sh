@@ -13,11 +13,17 @@ MW_DIR="$CONFIG_HOME/mwm"
 MARKER="mwm-shell:managed"
 
 pacman_pkgs=(
+    hyprland
+    kitty
     qt6-base
     qt6-declarative
     qt6-5compat
+    qt6-wayland
+    xdg-desktop-portal
+    xdg-desktop-portal-hyprland
     pipewire
     wireplumber
+    playerctl
     networkmanager
     bluez
     bluez-utils
@@ -25,7 +31,9 @@ pacman_pkgs=(
     inotify-tools
     power-profiles-daemon
     lm_sensors
+    fontconfig
     ttf-ibm-plex
+    noto-fonts
     git
 )
 
@@ -120,10 +128,9 @@ install_quickshell() {
 install_packages() {
     say "A instalar pacotes..."
     sudo pacman -Sy --needed --noconfirm "${pacman_pkgs[@]}"
-    if [[ "$COMPOSITOR" == "hyprland" ]] && ! pacman -Q hyprland >/dev/null 2>&1; then
-        sudo pacman -S --needed --noconfirm hyprland
-    fi
     install_quickshell
+    fc-cache -f >/dev/null 2>&1 || true
+    sudo fc-cache -f >/dev/null 2>&1 || true
 }
 
 link_shell() {
@@ -135,28 +142,9 @@ link_shell() {
     fi
 }
 
-write_hypr_conf() {
+write_snippet_lua() {
     local file="$1"
-    cat >"$file" <<'EOF'
-# mwm-shell:managed
-# Gerado pelo instalador. Volta a correr o instalador para o repor.
-
-exec-once = sh -c 'mkdir -p "$HOME/.local/state/mwm" && exec qs -c mwm >> "$HOME/.local/state/mwm/qs.log" 2>&1'
-
-layerrule {
-    name = mwm-blur
-    match:namespace = mwm-(bar|control|media|osd|notifications)
-    blur = on
-}
-
-bind = SUPER ALT, C, exec, qs -c mwm ipc call mwm toggle controlCenter
-bind = SUPER ALT, M, exec, qs -c mwm ipc call mwm toggle media
-bind = SUPER ALT, N, exec, qs -c mwm ipc call mwm toggle notifications
-EOF
-}
-
-write_hypr_lua() {
-    local file="$1"
+    mkdir -p "$(dirname "$file")"
     cat >"$file" <<'EOF'
 -- mwm-shell:managed
 -- Gerado pelo instalador. Volta a correr o instalador para o repor.
@@ -177,62 +165,105 @@ hl.layer_rule({
 EOF
 }
 
-append_once() {
+write_session_lua() {
     local file="$1"
-    local line="$2"
     mkdir -p "$(dirname "$file")"
-    touch "$file"
-    if ! grep -q "$MARKER" "$file"; then
-        printf '\n%s\n%s\n' "# $MARKER" "$line" >>"$file"
+    cat >"$file" <<'EOF'
+-- mwm-shell:managed
+-- Sessão mínima para Hyprland 0.56+. Volta a correr o instalador para a repor.
+
+local terminal = "kitty"
+local mainMod = "SUPER"
+
+hl.monitor({
+    output = "",
+    mode = "preferred",
+    position = "auto",
+    scale = "auto",
+})
+
+hl.config({
+    general = {
+        gaps_in = 4,
+        gaps_out = 8,
+        border_size = 1,
+        layout = "dwindle",
+    },
+    decoration = {
+        rounding = 0,
+        blur = {
+            enabled = true,
+            size = 8,
+            passes = 2,
+        },
+    },
+    input = {
+        kb_layout = "us",
+    },
+})
+
+hl.on("hyprland.start", function()
+    hl.exec_cmd("sh -c 'mkdir -p \"$HOME/.local/state/mwm\" && exec qs -c mwm >> \"$HOME/.local/state/mwm/qs.log\" 2>&1'")
+end)
+
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + ALT + C", hl.dsp.exec_cmd("qs -c mwm ipc call mwm toggle controlCenter"))
+hl.bind(mainMod .. " + ALT + M", hl.dsp.exec_cmd("qs -c mwm ipc call mwm toggle media"))
+hl.bind(mainMod .. " + ALT + N", hl.dsp.exec_cmd("qs -c mwm ipc call mwm toggle notifications"))
+
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true })
+
+hl.layer_rule({
+    name = "mwm-blur",
+    match = { namespace = "mwm-(bar|control|media|osd|notifications)" },
+    blur = true,
+})
+EOF
+}
+
+lua_is_managed() {
+    local file="$1"
+    [[ -f "$file" ]] && head -n 1 "$file" | grep -q "$MARKER"
+}
+
+park_generated_conf() {
+    local classic="$1"
+    if lua_is_managed "$classic"; then
+        mv "$classic" "$classic.bak"
+        say "O hyprland.conf gerado pelo instalador passou a $classic.bak"
     fi
 }
 
 configure_hyprland() {
-    # A Caelestia carrega sempre ~/.config, mesmo com XDG_CONFIG_HOME definido.
-    local lua_entry="$HOME/.config/hypr/hyprland.lua"
+    local lua_entry="$CONFIG_HOME/hypr/hyprland.lua"
     local user_lua="$HOME/.config/caelestia/hypr-user.lua"
     local classic="$CONFIG_HOME/hypr/hyprland.conf"
-    local snippet_conf="$CONFIG_HOME/hypr/mwm.conf"
     local snippet_lua="$HOME/.config/mwm/hypr.lua"
 
-    if [[ -f "$lua_entry" ]]; then
-        write_hypr_lua "$snippet_lua"
-        mkdir -p "$(dirname "$user_lua")"
-        touch "$user_lua"
-        if ! grep -q "$MARKER" "$user_lua"; then
-            cat >>"$user_lua" <<EOF
+    mkdir -p "$CONFIG_HOME/hypr"
+
+    if [[ ! -f "$lua_entry" ]] || lua_is_managed "$lua_entry"; then
+        write_session_lua "$lua_entry"
+        park_generated_conf "$classic"
+        say "Hyprland lê $lua_entry"
+        return 0
+    fi
+
+    write_snippet_lua "$snippet_lua"
+    mkdir -p "$(dirname "$user_lua")"
+    touch "$user_lua"
+    if ! grep -q "$MARKER" "$user_lua"; then
+        cat >>"$user_lua" <<EOF
 
 -- $MARKER
 dofile(os.getenv("HOME") .. "/.config/mwm/hypr.lua")
 EOF
-        fi
-        say "Hyprland (Lua) ligado em $user_lua"
-        return 0
     fi
-
-    mkdir -p "$CONFIG_HOME/hypr"
-    write_hypr_conf "$snippet_conf"
-    if [[ ! -f "$classic" ]]; then
-        cat >"$classic" <<EOF
-# $MARKER
-source = ~/.config/hypr/mwm.conf
-
-monitor = ,preferred,auto,1
-
-decoration {
-    blur {
-        enabled = true
-        size = 8
-        passes = 2
-    }
-}
-EOF
-        say "Criei $classic com arranque, blur e atalhos."
-        return 0
-    fi
-
-    append_once "$classic" "source = ~/.config/hypr/mwm.conf"
-    say "Hyprland ligado em $classic"
+    say "Hyprland (Lua existente) ligado em $user_lua"
 }
 
 enable_services() {
@@ -262,7 +293,7 @@ main() {
     say ""
     say "mwm-shell ficou instalada."
     say "Entra numa sessão Hyprland. A barra arranca sozinha."
-    say "Atalhos: Super+Alt+C controlo, Super+Alt+M media, Super+Alt+N notificações."
+    say "Atalhos: Super+Return terminal, Super+Alt+C controlo, Super+Alt+M media, Super+Alt+N notificações."
 }
 
 main "$@"
