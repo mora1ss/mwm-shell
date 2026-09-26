@@ -14,5 +14,5 @@ Text {
     font.pixelSize: small ? Theme.fontSizeSmall : (mono ? Theme.fontSizeMono : Theme.fontSizeUi)
     font.hintingPreference: Font.PreferVerticalHinting
     font.kerning: true
-    implicitHeight: Math.max(contentHeight, font.pixelSize + 4)
+    height: Math.max(implicitHeight, font.pixelSize + 4)
 }
